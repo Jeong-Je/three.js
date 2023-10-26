@@ -1,2 +1,4 @@
 /node_modules
 /three
+/package-lock.json
+/package.json

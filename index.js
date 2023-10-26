@@ -1,3 +1,7 @@
+import * as THREE from "./three/build/three.module.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -8,67 +12,137 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.set(20, 100, 150);
+camera.position.set(10, 5, 90);
 camera.lookAt(0, 0, 0);
 
-// 키보드 WASD로 카메라 시선 x,y값 조정
-// window.addEventListener("keydown", (e) => {
-//   if(e.key === 'w'){
-//     camera.position.x -= 1;
-//   }
-// });
-
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
 controls.update();
 
 const updateCamera = () => {
   // 카메라 투영 매트릭스를 업데이트
   camera.updateProjectionMatrix();
-}
+};
 
-
-//OBJ 파일 로더
-const loader = new THREE.OBJLoader();
+//GLTF 파일 로더
+const loader = new GLTFLoader();
 
 loader.load(
-  "resources/models/ikea_table.obj",
-
-  function (object) {
-    object.scale.setScalar(0.1);
-    object.position.y = -18.5;
-    object.position.x = -25;
-    scene.add(object);
+  // resource URL
+  "resources/models/floor_lamp/scene.gltf",
+  // called when the resource is loaded
+  gltf => {
+    gltf.scene.castShadow = true;
+    gltf.scene.position.set(-25, -20, -25);
+    gltf.scene.rotation.set(0, 0, 0);
+    gltf.scene.scale.set(0.1, 0.1, 0.1);
+    // console.log('position', gltf.scene.position);
+    // console.log('scale', gltf.scene.scale);
+    // console.log(gltf);
+    scene.add(gltf.scene);
   },
-
-  function (xhr) {
-    console.log(`Ikea table : ${(xhr.loaded / xhr.total) * 100} % loaded`);
+  // called while loading is progressing
+  xhr => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
   },
-
-  function (err) {
-    console.log(`An error happend :  ${err}`);
+  // called when loading has errors
+  err => {
+    console.log(`An error happened : ${err}`);
   }
 );
 
 loader.load(
-  "resources/models/desk.obj",
-
-  function (object) {
-    object.scale.setScalar(0.1);
-    object.castShadow = true;
-    console.log(object);
-    object.rotation.x = -0.5 * Math.PI;
-    object.rotation.z = Math.PI;
-    object.position.z = -25;
-    object.position.y = -20;
-    scene.add(object);
+  // resource URL
+  "resources/models/desk_with_pc/scene.gltf",
+  // called when the resource is loaded
+  (gltf) => {
+    gltf.scene.castShadow = true;
+    gltf.scene.position.set(0, -20, -26.5);
+    gltf.scene.rotation.set(0, -0.5 * Math.PI, 0);
+    gltf.scene.scale.set(0.03, 0.03, 0.03);
+    // console.log('position', gltf.scene.position);
+    // console.log('scale', gltf.scene.scale);
+    // console.log(gltf);
+    scene.add(gltf.scene);
   },
-
-  function (xhr) {
-    console.log(`Ikea table : ${(xhr.loaded / xhr.total) * 100} % loaded`);
+  // called while loading is progressing
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
   },
+  // called when loading has errors
+  (err) => {
+    console.log(`An error happened : ${err}`);
+  }
+);
 
-  function (err) {
-    console.log(`An error happend :  ${err}`);
+loader.load(
+  // resource URL
+  "resources/models/gaming_chair/scene.gltf",
+  // called when the resource is loaded
+  (gltf) => {
+    gltf.scene.castShadow = true;
+    gltf.scene.position.set(0, -15, -20);
+    gltf.scene.rotation.set(0, 180, 0);
+    gltf.scene.scale.set(0.3, 0.3, 0.3);
+    // console.log('position', gltf.scene.position);
+    // console.log('scale', gltf.scene.scale);
+    // console.log(gltf);
+    scene.add(gltf.scene);
+  },
+  // called while loading is progressing
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  // called when loading has errors
+  (err) => {
+    console.log(`An error happened : ${err}`);
+  }
+);
+
+loader.load(
+  // resource URL
+  "resources/models/wall_decoration_picture/scene.gltf",
+  // called when the resource is loaded
+  gltf => {
+    gltf.scene.castShadow = true;
+    gltf.scene.position.set(-29, 0, 0);
+    gltf.scene.rotation.set(0, 0, 0);
+    gltf.scene.scale.set(10, 10, 10);
+    // console.log('position', gltf.scene.position);
+    // console.log('scale', gltf.scene.scale);
+    // console.log(gltf);
+    scene.add(gltf.scene);
+  },
+  // called while loading is progressing
+  xhr => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  // called when loading has errors
+  err => {
+    console.log(`An error happened : ${err}`);
+  }
+);
+
+loader.load(
+  // resource URL
+  "resources/models/wall_clock/scene.gltf",
+  // called when the resource is loaded
+  gltf => {
+    gltf.scene.castShadow = true;
+    gltf.scene.position.set(-20, 10, -29);
+    gltf.scene.rotation.set(0, -0.5 * Math.PI, 0);
+    gltf.scene.scale.set(7, 7, 7);
+    // console.log('position', gltf.scene.position);
+    // console.log('scale', gltf.scene.scale);
+    // console.log(gltf);
+    scene.add(gltf.scene);
+  },
+  // called while loading is progressing
+  xhr => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  // called when loading has errors
+  err => {
+    console.log(`An error happened : ${err}`);
   }
 );
 
@@ -80,24 +154,17 @@ gui.add(camera, "fov", 25, 100).onChange(updateCamera);
 // Scene 추가
 const scene = new THREE.Scene();
 
-
 // 조명 추가 (OBJ 모델들이 검은 색으로 보여서 추가)
-const ambientLight = new THREE.AmbientLight(0x000000, 0.5);
+const ambientLight = new THREE.AmbientLight(0xfffffff, 3);
 scene.add(ambientLight);
-
-const pointLight = new THREE.PointLight(0xffffff, 1);
-pointLight.position.set(0, 0, 5);
-scene.add(pointLight);
-
 
 // 바닥 스킨
 const floorTexture = new THREE.TextureLoader().load(
   "resources/textures/floorTile.jpg"
 );
 
-
 //바닥 설정
-const planeSize = 6;
+const planeSize = 8;
 
 floorTexture.wrapS = THREE.RepeatWrapping;
 floorTexture.wrapT = THREE.RepeatWrapping;
@@ -122,7 +189,6 @@ scene.add(x_plane);
 const wallTexture = new THREE.TextureLoader().load(
   "resources/textures/wall.jpg"
 );
-
 
 // 벽 plane ( y, z )
 const y_planeGeometry = new THREE.PlaneGeometry(60, 40, 2, 2);
@@ -151,11 +217,10 @@ z_plane.position.y = 0;
 z_plane.position.z = -30;
 scene.add(z_plane);
 
-
 const animate = () => {
   requestAnimationFrame(animate);
   controls.update();
   // 여기에서 카메라나 물체의 변환을 조작할 수 있습니다.
   renderer.render(scene, camera);
-}
+};
 animate();
