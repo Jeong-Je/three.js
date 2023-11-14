@@ -10,13 +10,20 @@
         "imports": {
           "three": "./three/build/three.module.js",
           "three/examples/jsm/loaders/GLTFLoader": "./three/examples/jsm/loaders/GLTFLoader.js",
-          "three/examples/jsm/controls/OrbitControls": "./three/examples/jsm/controls/OrbitControls.js"
+          "three/examples/jsm/controls/OrbitControls": "./three/examples/jsm/controls/OrbitControls.js",
+          "three/examples/jsm/controls/PointerLockControls": "./three/examples/jsm/controls/PointerLockControls.js"
         }
       }
     </script>
     <link href="index.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
+    <div id="notice">
+      <p">Pause key is 'ESC'</p>
+    </div>
+    <div id="menuPanel">
+      <button id="startButton">Click to Enter</button>
+    </div>
     <script type="module" src="index.js"></script>
   </body>
 </html>
