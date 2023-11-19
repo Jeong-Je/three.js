@@ -1,20 +1,31 @@
 import * as THREE from "three";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+// import { RectAreaLightHelper }  from "./three/examples/jsm/helpers/RectAreaLightHelper.js";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
+
+renderer.shadowMap.enabled = true;
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 const camera = new THREE.PerspectiveCamera(
-  30,
+  50,
   window.innerWidth / window.innerHeight,
   0.1,
   1000
 );
 camera.position.set(10, 5, 90);
 camera.lookAt(0, 0, 0);
+
+const gui = new dat.GUI();
+
+// const orbitControls = new OrbitControls(camera, renderer.domElement);
+// orbitControls.update();
+
+// gui.add(orbitControls, "enabled").name('OribitControls');
 
 const updateCamera = () => {
   // 카메라 투영 매트릭스를 업데이트
@@ -30,12 +41,9 @@ loader.load(
   // called when the resource is loaded
   (gltf) => {
     gltf.scene.castShadow = true;
-    gltf.scene.position.set(-25, -20, -25);
+    gltf.scene.position.set(-35, -20, -35);
     gltf.scene.rotation.set(0, 0, 0);
     gltf.scene.scale.set(0.1, 0.1, 0.1);
-    // console.log('position', gltf.scene.position);
-    // console.log('scale', gltf.scene.scale);
-    // console.log(gltf);
     scene.add(gltf.scene);
   },
   // called while loading is progressing
@@ -54,12 +62,9 @@ loader.load(
   // called when the resource is loaded
   (gltf) => {
     gltf.scene.castShadow = true;
-    gltf.scene.position.set(0, -20, -26.5);
+    gltf.scene.position.set(15, -20, -34);
     gltf.scene.rotation.set(0, -0.5 * Math.PI, 0);
-    gltf.scene.scale.set(0.03, 0.03, 0.03);
-    // console.log('position', gltf.scene.position);
-    // console.log('scale', gltf.scene.scale);
-    // console.log(gltf);
+    gltf.scene.scale.set(0.05, 0.05, 0.05);
     scene.add(gltf.scene);
   },
   // called while loading is progressing
@@ -78,12 +83,9 @@ loader.load(
   // called when the resource is loaded
   (gltf) => {
     gltf.scene.castShadow = true;
-    gltf.scene.position.set(0, -15, -20);
+    gltf.scene.position.set(15, -11.5, -25);
     gltf.scene.rotation.set(0, 180, 0);
-    gltf.scene.scale.set(0.3, 0.3, 0.3);
-    // console.log('position', gltf.scene.position);
-    // console.log('scale', gltf.scene.scale);
-    // console.log(gltf);
+    gltf.scene.scale.set(0.5, 0.5, 0.5);
     scene.add(gltf.scene);
   },
   // called while loading is progressing
@@ -102,12 +104,9 @@ loader.load(
   // called when the resource is loaded
   (gltf) => {
     gltf.scene.castShadow = true;
-    gltf.scene.position.set(-29, 0, 0);
-    gltf.scene.rotation.set(0, 0, 0);
+    gltf.scene.position.set(6, 0, -39);
+    gltf.scene.rotation.set(0, -0.5*Math.PI, 0);
     gltf.scene.scale.set(10, 10, 10);
-    // console.log('position', gltf.scene.position);
-    // console.log('scale', gltf.scene.scale);
-    // console.log(gltf);
     scene.add(gltf.scene);
   },
   // called while loading is progressing
@@ -126,12 +125,71 @@ loader.load(
   // called when the resource is loaded
   (gltf) => {
     gltf.scene.castShadow = true;
-    gltf.scene.position.set(-20, 10, -29);
+    gltf.scene.position.set(-20, 10, -39);
     gltf.scene.rotation.set(0, -0.5 * Math.PI, 0);
     gltf.scene.scale.set(7, 7, 7);
-    // console.log('position', gltf.scene.position);
-    // console.log('scale', gltf.scene.scale);
-    // console.log(gltf);
+    scene.add(gltf.scene);
+  },
+  // called while loading is progressing
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  // called when loading has errors
+  (err) => {
+    console.log(`An error happened : ${err}`);
+  }
+);
+
+loader.load(
+  // resource URL
+  "resources/models/lowpoly_bed/scene.gltf",
+  // called when the resource is loaded
+  (gltf) => {
+    gltf.scene.castShadow = true;
+    gltf.scene.position.set(-25, -20, -15);
+    gltf.scene.rotation.set(0, 0.5 * Math.PI, 0);
+    gltf.scene.scale.set(0.07, 0.07, 0.07);
+    scene.add(gltf.scene);
+  },
+  // called while loading is progressing
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  // called when loading has errors
+  (err) => {
+    console.log(`An error happened : ${err}`);
+  }
+);
+
+loader.load(
+  // resource URL
+  "resources/models/led_fluorescent_light/scene.gltf",
+  // called when the resource is loaded
+  (gltf) => {
+    gltf.scene.castShadow = true;
+    gltf.scene.position.set(0, 19, 0);
+    gltf.scene.scale.set(15, 15, 15);
+    scene.add(gltf.scene);
+  },
+  // called while loading is progressing
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  // called when loading has errors
+  (err) => {
+    console.log(`An error happened : ${err}`);
+  }
+);
+
+loader.load(
+  // resource URL
+  "resources/models/closet/scene.gltf",
+  // called when the resource is loaded
+  (gltf) => {
+    gltf.scene.castShadow = true;
+    gltf.scene.scale.set(0.15, 0.15, 0.15);
+    gltf.scene.position.set(-36, -20, 19);
+    gltf.scene.rotation.set(0, Math.PI, 0);
     scene.add(gltf.scene);
   },
   // called while loading is progressing
@@ -145,24 +203,33 @@ loader.load(
 );
 
 // 카메라의 속성을 변경할 때마다 업데이트
-const gui = new dat.GUI();
 gui.add(camera, "fov", 25, 100).onChange(updateCamera);
 
 // Scene 추가
 const scene = new THREE.Scene();
 
-// 조명 추가 (모델들이 검은 색으로 보여서 추가)
-const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+// ambientLight
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
 scene.add(ambientLight);
 
 // pointLight
 const pointLight = new THREE.PointLight(0xffa500, 100, 100);
-pointLight.position.set(-25, -6, -25);
+pointLight.position.set(-35, -6, -35);
 pointLight.castShadow = true;
 scene.add(pointLight);
 
 const pointLightHelper = new THREE.PointLightHelper(pointLight, 1);
 scene.add(pointLightHelper);
+
+//rectAreaLight
+const rectLight = new THREE.RectAreaLight( 0xFDF5E6, 70, 9, 9);
+rectLight.position.set( 0, 19, 0 );
+rectLight.lookAt( 0, 0, 0 );
+scene.add( rectLight )
+
+// const rectLightHelper = new RectAreaLightHelper( rectLight );
+// rectLight.add( rectLightHelper );
+
 
 // 바닥 스킨
 const floorTexture = new THREE.TextureLoader().load(
@@ -179,7 +246,7 @@ const repeats = planeSize / 2;
 floorTexture.repeat.set(repeats, repeats);
 
 // 바닥 plane
-const x_planeGeometry = new THREE.PlaneGeometry(60, 60, 2, 2);
+const x_planeGeometry = new THREE.PlaneGeometry(80, 80, 2, 2);
 const x_planeMaterial = new THREE.MeshStandardMaterial({
   map: floorTexture,
   // color: 0xff00ff,
@@ -193,45 +260,42 @@ x_plane.position.y = -20;
 x_plane.position.z = 0;
 scene.add(x_plane);
 
+const wallTexture = new THREE.TextureLoader().load(
+  "resources/textures/wall.jpg"
+);
+
+// 벽 plane ( y, z )
+const wallPaperGeometry = new THREE.PlaneGeometry(80, 40, 2, 2);
+const wallPaperMaterial = new THREE.MeshStandardMaterial({
+  map: wallTexture,
+  side: THREE.DoubleSide,
+});
+
+const y_plane = new THREE.Mesh(wallPaperGeometry, wallPaperMaterial);
+y_plane.receiveShadow = true;
+y_plane.rotation.y = -0.5 * Math.PI;
+y_plane.position.x = -40;
+y_plane.position.y = 0;
+y_plane.position.z = 0;
+scene.add(y_plane);
+
+const z_plane = new THREE.Mesh(wallPaperGeometry, wallPaperMaterial);
+z_plane.receiveShadow = true;
+z_plane.rotation.x = -1 * Math.PI;
+z_plane.position.x = 0;
+z_plane.position.y = 0;
+z_plane.position.z = -40;
+scene.add(z_plane);
+
+const wallPaperGeometry2 = new THREE.PlaneGeometry(80, 80, 2, 2);
 //천장
-const x_plane2 = new THREE.Mesh(x_planeGeometry, x_planeMaterial);
+const x_plane2 = new THREE.Mesh(wallPaperGeometry2, wallPaperMaterial);
 x_plane2.receiveShadow = true;
 x_plane2.rotation.x = -0.5 * Math.PI;
 x_plane2.position.x = 0;
 x_plane2.position.y = 20;
 x_plane2.position.z = 0;
 scene.add(x_plane2);
-
-const wallTexture = new THREE.TextureLoader().load(
-  "resources/textures/wall.jpg"
-);
-
-// 벽 plane ( y, z )
-const y_planeGeometry = new THREE.PlaneGeometry(60, 40, 2, 2);
-const y_planeMaterial = new THREE.MeshStandardMaterial({
-  map: wallTexture,
-  side: THREE.DoubleSide,
-});
-const y_plane = new THREE.Mesh(y_planeGeometry, y_planeMaterial);
-y_plane.receiveShadow = true;
-y_plane.rotation.y = -0.5 * Math.PI;
-y_plane.position.x = -30;
-y_plane.position.y = 0;
-y_plane.position.z = 0;
-scene.add(y_plane);
-
-const z_planeGeometry = new THREE.PlaneGeometry(60, 40, 2, 2);
-const z_planeMaterial = new THREE.MeshStandardMaterial({
-  map: wallTexture,
-  side: THREE.DoubleSide,
-});
-const z_plane = new THREE.Mesh(z_planeGeometry, z_planeMaterial);
-z_plane.receiveShadow = true;
-z_plane.rotation.x = -1 * Math.PI;
-z_plane.position.x = 0;
-z_plane.position.y = 0;
-z_plane.position.z = -30;
-scene.add(z_plane);
 
 const controls = new PointerLockControls(camera, renderer.domElement);
 
