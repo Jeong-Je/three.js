@@ -3,6 +3,7 @@ import { PointerLockControls } from "three/examples/jsm/controls/PointerLockCont
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 // import { RectAreaLightHelper }  from "./three/examples/jsm/helpers/RectAreaLightHelper.js";
+import { DragControls } from "./three/examples/jsm/controls/DragControls.js";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 
@@ -32,14 +33,40 @@ const updateCamera = () => {
   camera.updateProjectionMatrix();
 };
 
+let sceneMeshes = [];
 //GLTF 파일 로더
 const loader = new GLTFLoader();
+
+const dragControls = new DragControls(sceneMeshes, camera, renderer.domElement);
+// const boxHelper = new THREE.BoxHelper(gltf.scene, 0xffff00);
+// boxHelper.visible = true;
+// console.log(boxHelper);
+dragControls.addEventListener("hoveron", function () {
+  // boxHelper.visible = true;
+  orbitControls.enabled = false;
+});
+dragControls.addEventListener("hoveroff", function () {
+  // boxHelper.visible = false;
+  orbitControls.enabled = true;
+});
+dragControls.addEventListener("drag", function (event) {
+  event.object.position.y = 0;
+});
+dragControls.addEventListener("dragstart", function () {
+  // boxHelper.visible = true;
+  orbitControls.enabled = false;
+});
+dragControls.addEventListener("dragend", function () {
+  // boxHelper.visible = false;
+  orbitControls.enabled = true;
+});
 
 loader.load(
   // resource URL
   "resources/models/floor_lamp/scene.gltf",
   // called when the resource is loaded
   (gltf) => {
+    sceneMeshes.push(gltf.scene);
     gltf.scene.castShadow = true;
     gltf.scene.position.set(-35, -20, -35);
     gltf.scene.rotation.set(0, 0, 0);
@@ -56,11 +83,12 @@ loader.load(
   }
 );
 
-let gaming = loader.load(
+loader.load(
   // resource URL
   "resources/models/desk_with_pc/scene.gltf",
   // called when the resource is loaded
   (gltf) => {
+    sceneMeshes.push(gltf.scene);
     gltf.scene.castShadow = true;
     gltf.scene.position.set(15, -20, -34);
     gltf.scene.rotation.set(0, -0.5 * Math.PI, 0);
@@ -145,6 +173,7 @@ loader.load(
   "resources/models/lowpoly_bed/scene.gltf",
   // called when the resource is loaded
   (gltf) => {
+    sceneMeshes.push(gltf.scene);
     gltf.scene.castShadow = true;
     gltf.scene.position.set(-25, -20, -15);
     gltf.scene.rotation.set(0, 0.5 * Math.PI, 0);
