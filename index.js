@@ -22,10 +22,10 @@ camera.lookAt(0, 0, 0);
 
 const gui = new dat.GUI();
 
-// const orbitControls = new OrbitControls(camera, renderer.domElement);
-// orbitControls.update();
-
-// gui.add(orbitControls, "enabled").name('OribitControls');
+const orbitControls = new OrbitControls(camera, renderer.domElement);
+orbitControls.update();
+orbitControls.enabled = false;
+gui.add(orbitControls, "enabled").name("OribitControls");
 
 const updateCamera = () => {
   // 카메라 투영 매트릭스를 업데이트
@@ -56,7 +56,7 @@ loader.load(
   }
 );
 
-loader.load(
+let gaming = loader.load(
   // resource URL
   "resources/models/desk_with_pc/scene.gltf",
   // called when the resource is loaded
@@ -105,7 +105,7 @@ loader.load(
   (gltf) => {
     gltf.scene.castShadow = true;
     gltf.scene.position.set(6, 0, -39);
-    gltf.scene.rotation.set(0, -0.5*Math.PI, 0);
+    gltf.scene.rotation.set(0, -0.5 * Math.PI, 0);
     gltf.scene.scale.set(10, 10, 10);
     scene.add(gltf.scene);
   },
@@ -202,9 +202,6 @@ loader.load(
   }
 );
 
-// 카메라의 속성을 변경할 때마다 업데이트
-gui.add(camera, "fov", 25, 100).onChange(updateCamera);
-
 // Scene 추가
 const scene = new THREE.Scene();
 
@@ -222,14 +219,13 @@ const pointLightHelper = new THREE.PointLightHelper(pointLight, 1);
 scene.add(pointLightHelper);
 
 //rectAreaLight
-const rectLight = new THREE.RectAreaLight( 0xFDF5E6, 70, 9, 9);
-rectLight.position.set( 0, 19, 0 );
-rectLight.lookAt( 0, 0, 0 );
-scene.add( rectLight )
+const rectLight = new THREE.RectAreaLight(0xfdf5e6, 70, 9, 9);
+rectLight.position.set(0, 19, 0);
+rectLight.lookAt(0, 0, 0);
+scene.add(rectLight);
 
 // const rectLightHelper = new RectAreaLightHelper( rectLight );
 // rectLight.add( rectLightHelper );
-
 
 // 바닥 스킨
 const floorTexture = new THREE.TextureLoader().load(
@@ -297,58 +293,85 @@ x_plane2.position.y = 20;
 x_plane2.position.z = 0;
 scene.add(x_plane2);
 
-const controls = new PointerLockControls(camera, renderer.domElement);
+let controls, onKeyDown;
 
-const startButton = document.getElementById("startButton");
-const notice = document.getElementById("notice");
-startButton.addEventListener(
-  "click",
-  () => {
-    controls.lock();
-  },
-  false
-);
+const pointerLockControlsOn = () => {
+  controls = new PointerLockControls(camera, renderer.domElement);
 
-controls.addEventListener("lock", () => {
-  menuPanel.style.display = "none";
-  notice.style.display = "block";
-});
-controls.addEventListener("unlock", () => {
+  const startButton = document.getElementById("startButton");
+  const notice = document.getElementById("notice");
+  startButton.addEventListener(
+    "click",
+    () => {
+      controls.lock();
+    },
+    false
+  );
   menuPanel.style.display = "block";
   notice.style.display = "none";
-});
 
-const moveSpeed = 2;
-const option = {
-  moveSpeed: 1,
-};
-const updateMoveSpeed = () => {
-  console.log(option.moveSpeed);
-};
-gui.add(option, "moveSpeed", 0.5, 5).onChange(updateMoveSpeed);
+  controls.addEventListener("lock", () => {
+    menuPanel.style.display = "none";
+    notice.style.display = "block";
+  });
+  controls.addEventListener("unlock", () => {
+    menuPanel.style.display = "block";
+    notice.style.display = "none";
+  });
 
-const onKeyDown = (event) => {
-  switch (event.code) {
-    case "KeyW":
-      controls.moveForward(moveSpeed);
-      break;
-    case "KeyA":
-      controls.moveRight(-moveSpeed);
-      break;
-    case "KeyS":
-      controls.moveForward(-moveSpeed);
-      break;
-    case "KeyD":
-      controls.moveRight(moveSpeed);
-      break;
-  }
+  onKeyDown = (event) => {
+    switch (event.code) {
+      case "KeyW":
+        controls.moveForward(2);
+        break;
+      case "KeyA":
+        controls.moveRight(-2);
+        break;
+      case "KeyS":
+        controls.moveForward(-2);
+        break;
+      case "KeyD":
+        controls.moveRight(2);
+        break;
+    }
+  };
+
+  document.addEventListener("keydown", onKeyDown, false);
 };
 
-document.addEventListener("keydown", onKeyDown, false);
+const pointerLockControlsOff = () => {
+  controls = undefined;
+  onKeyDown = undefined;
+  menuPanel.style.display = "none";
+  notice.style.display = "none";
+};
+
+const pointerLockControls = {
+  flag: true,
+};
+
+gui
+  .add(pointerLockControls, "flag")
+  .name("포인터락컨트롤")
+  .onChange(() => {
+    console.log("포인터락컨트롤 값", pointerLockControls.flag);
+    if (pointerLockControls.flag) {
+      pointerLockControlsOn();
+    } else {
+      pointerLockControlsOff();
+    }
+  });
+
+pointerLockControlsOn();
+
+// 카메라의 속성을 변경할 때마다 업데이트
+gui.add(camera, "fov", 25, 100).onChange(updateCamera);
+
 
 const animate = () => {
   requestAnimationFrame(animate);
-  // 여기에서 카메라나 물체의 변환을 조작할 수 있습니다.
+  // 여기에서 카메라나 물체의 변환을 조작
+
   renderer.render(scene, camera);
 };
 animate();
