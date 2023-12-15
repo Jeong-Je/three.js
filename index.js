@@ -240,7 +240,7 @@ loader.load(
     sceneMeshes.push(gltf.scene);
     gltf.scene.castShadow = true;
     gltf.scene.scale.set(20, 20, 20);
-    gltf.scene.position.set(33,-20,0);
+    gltf.scene.position.set(33, -20, 0);
     gltf.scene.rotation.set(0, 0.5 * Math.PI, 0);
     scene.add(gltf.scene);
   },
@@ -257,14 +257,16 @@ loader.load(
 // Scene 추가
 const scene = new THREE.Scene();
 
-const ballTexture = new THREE.TextureLoader().load("resources/textures/soccerball.jpg");
+const ballTexture = new THREE.TextureLoader().load(
+  "resources/textures/soccerball.jpg"
+);
 
 const ballGeometry = new THREE.SphereGeometry(2, 32, 16);
 const ballMaterial = new THREE.MeshBasicMaterial({
   map: ballTexture,
 });
 const ball = new THREE.Mesh(ballGeometry, ballMaterial);
-ball.position.set(30,-18,10);
+ball.position.set(30, -18, 10);
 scene.add(ball);
 
 function bounceBall() {
@@ -272,13 +274,13 @@ function bounceBall() {
   gsap.to(ball.position, {
     duration: 0.5, // 빠르게 올라감
     y: -5,
-    ease: 'power1.inOut',
+    ease: "power1.inOut",
     onComplete: () => {
       // 위로 튕긴 후 아래로 내려가는 애니메이션
       gsap.to(ball.position, {
         duration: 2, // 빠르게 내려감
         y: -18,
-        ease: 'bounce.out', // 튕기는 느낌
+        ease: "bounce.out", // 튕기는 느낌
         onComplete: bounceBall,
       });
     },
@@ -288,6 +290,20 @@ function bounceBall() {
 // 초기 애니메이션 시작
 bounceBall();
 
+const ball2 = new THREE.Mesh(ballGeometry, ballMaterial);
+scene.add(ball2);
+
+const curve = new THREE.QuadraticBezierCurve3(
+  new THREE.Vector3(15, -18, 20),   // 시작점
+  new THREE.Vector3(20, -8, 20),    // 제어점
+  new THREE.Vector3(25, -18, 20)   // 종료점
+);
+
+const points = curve.getPoints(100);
+const geometry = new THREE.BufferGeometry().setFromPoints(points);
+const material = new THREE.LineBasicMaterial({ color: 0xffff00 });
+const curveObject = new THREE.Line(geometry, material);
+scene.add(curveObject);
 
 // ambientLight
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
@@ -406,16 +422,16 @@ const pointerLockControlsOn = () => {
   onKeyDown = (event) => {
     switch (event.code) {
       case "KeyW":
-        controls.moveForward(2);
+        controls.moveForward(1);
         break;
       case "KeyA":
-        controls.moveRight(-2);
+        controls.moveRight(-1);
         break;
       case "KeyS":
-        controls.moveForward(-2);
+        controls.moveForward(-1);
         break;
       case "KeyD":
-        controls.moveRight(2);
+        controls.moveRight(1);
         break;
     }
   };
@@ -451,10 +467,13 @@ pointerLockControlsOn();
 // 카메라의 속성을 변경할 때마다 업데이트
 gui.add(camera, "fov", 25, 100).onChange(updateCamera);
 
-
+let t = 0;
 const animate = () => {
   requestAnimationFrame(animate);
   // 여기에서 카메라나 물체의 변환을 조작
+
+  ball2.position.copy(curve.getPoint(t));
+  t = (t + 0.005) % 1;
 
   renderer.render(scene, camera);
 };
