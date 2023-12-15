@@ -232,6 +232,28 @@ loader.load(
   }
 );
 
+loader.load(
+  // resource URL
+  "resources/models/shelf_with_balls/scene.gltf",
+  // called when the resource is loaded
+  (gltf) => {
+    sceneMeshes.push(gltf.scene);
+    gltf.scene.castShadow = true;
+    gltf.scene.scale.set(20, 20, 20);
+    gltf.scene.position.set(33,-20,0);
+    gltf.scene.rotation.set(0, 0.5 * Math.PI, 0);
+    scene.add(gltf.scene);
+  },
+  // called while loading is progressing
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  // called when loading has errors
+  (err) => {
+    console.log(`An error happened : ${err}`);
+  }
+);
+
 // Scene 추가
 const scene = new THREE.Scene();
 
@@ -242,21 +264,22 @@ const ballMaterial = new THREE.MeshBasicMaterial({
   map: ballTexture,
 });
 const ball = new THREE.Mesh(ballGeometry, ballMaterial);
-ball.position.set(0,-18,0);
+ball.position.set(30,-18,10);
 scene.add(ball);
 
 function bounceBall() {
+  // 위로 튕기는 애니메이션
   gsap.to(ball.position, {
-    duration: 1,
+    duration: 0.5, // 빠르게 올라감
     y: -5,
     ease: 'power1.inOut',
     onComplete: () => {
       // 위로 튕긴 후 아래로 내려가는 애니메이션
       gsap.to(ball.position, {
-        duration: 1,
+        duration: 2, // 빠르게 내려감
         y: -18,
-        ease: 'power1.inOut',
-        onComplete: bounceBall, // 트윈이 끝나면 다시 bounceBall 함수 호출하여 반복
+        ease: 'bounce.out', // 튕기는 느낌
+        onComplete: bounceBall,
       });
     },
   });
