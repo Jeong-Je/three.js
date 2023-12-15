@@ -4,6 +4,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 // import { RectAreaLightHelper }  from "./three/examples/jsm/helpers/RectAreaLightHelper.js";
 import { DragControls } from "./three/examples/jsm/controls/DragControls.js";
+// import gsap from './node_modules/gsap';
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 
@@ -233,6 +234,37 @@ loader.load(
 
 // Scene 추가
 const scene = new THREE.Scene();
+
+const ballTexture = new THREE.TextureLoader().load("resources/textures/soccerball.jpg");
+
+const ballGeometry = new THREE.SphereGeometry(2, 32, 16);
+const ballMaterial = new THREE.MeshBasicMaterial({
+  map: ballTexture,
+});
+const ball = new THREE.Mesh(ballGeometry, ballMaterial);
+ball.position.set(0,-18,0);
+scene.add(ball);
+
+function bounceBall() {
+  gsap.to(ball.position, {
+    duration: 1,
+    y: -5,
+    ease: 'power1.inOut',
+    onComplete: () => {
+      // 위로 튕긴 후 아래로 내려가는 애니메이션
+      gsap.to(ball.position, {
+        duration: 1,
+        y: -18,
+        ease: 'power1.inOut',
+        onComplete: bounceBall, // 트윈이 끝나면 다시 bounceBall 함수 호출하여 반복
+      });
+    },
+  });
+}
+
+// 초기 애니메이션 시작
+bounceBall();
+
 
 // ambientLight
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
